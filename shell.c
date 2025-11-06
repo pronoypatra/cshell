@@ -235,11 +235,14 @@ int main()
     getcwd(home_directory, sizeof(home_directory));
     char historypath[MAX_PATH_LENGTH];
     sprintf(historypath, "%s/%s", home_directory, "history.txt");
-    int fd = open(historypath, O_RDWR);
+    int fd = open(historypath, O_RDWR | O_CREAT, 0644);
     char history[HISTORY][MAX_COMMAND_LENGTH];
     int historyindex = 0, numofcommands = 0;
-    historyindex = gethistoryfirst(history, &numofcommands, fd);
-    close(fd);
+    if (fd >= 0)
+    {
+        historyindex = gethistoryfirst(history, &numofcommands, fd);
+        close(fd);
+    }
 
     while (1)
     {

@@ -21,8 +21,8 @@ shell
 core
 core.*
 
-# Ignore history and user data files
-history.txt
+# Ignore user data files
+*.txt
 
 # Ignore byproducts from editors
 .DS_Store
@@ -33,4 +33,3 @@ history.txt
 # Ignore all Makefile intermediate targets
 *.dSYM/
 # End Generation Here
-```

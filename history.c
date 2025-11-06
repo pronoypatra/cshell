@@ -40,9 +40,9 @@ void gethistory(char history[HISTORY][MAX_COMMAND_LENGTH], char *historypath, ch
 {
     if (*numofcommands < HISTORY)
     {
-        if (strcmp(a, history[*historyindex - 1]))
+        if (*numofcommands == 0 || strcmp(a, history[((*historyindex - 1) % HISTORY + HISTORY) % HISTORY]))
         {
-            int fd = open(historypath, O_RDWR | O_TRUNC);
+            int fd = open(historypath, O_RDWR | O_TRUNC | O_CREAT, 0644);
 
             strcpy(history[*historyindex], a);
             history[*historyindex][strlen(history[*historyindex])] = '\0';
@@ -64,7 +64,7 @@ void gethistory(char history[HISTORY][MAX_COMMAND_LENGTH], char *historypath, ch
     {
         if (strcmp(history[((*historyindex - 1) % HISTORY + HISTORY) % HISTORY], a))
         {
-            int fd = open(historypath, O_RDWR | O_TRUNC);
+            int fd = open(historypath, O_RDWR | O_TRUNC | O_CREAT, 0644);
 
             strcpy(history[*historyindex], a);
             history[*historyindex][strlen(history[*historyindex])] = '\0';
@@ -89,7 +89,12 @@ void dohistory(char *home_directory)
 {
     char historypath[MAX_PATH_LENGTH];
     sprintf(historypath, "%s/%s", home_directory, "history.txt");
-    int fd = open(historypath, O_RDWR);
+    int fd = open(historypath, O_RDWR | O_CREAT, 0644);
+    if (fd < 0)
+    {
+        printf("No history yet\n");
+        return;
+    }
     char history[HISTORY][MAX_COMMAND_LENGTH];
     int historyindex = 0;
     int validread = 1;

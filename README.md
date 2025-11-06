@@ -1,4 +1,4 @@
-# Custom Shell Implementation - Complete Documentation
+# Custom Shell Implementation in C
 
 ## Overview
 
@@ -67,6 +67,9 @@ All magic numbers have been replaced with named constants defined in `helper.h`:
 #### echo
 - Prints arguments to stdout
 - Syntax: `echo [arguments...]`
+- Anything inside message is printed as-is
+- Message is of single line
+- Multiple spaces or tabs are taken as one
 
 #### exit
 - Exits the shell
@@ -149,9 +152,10 @@ All magic numbers have been replaced with named constants defined in `helper.h`:
 - `Ctrl+D`: Exits the shell
 
 #### Prompt Features
-- Displays: `username@hostname:directory>`
-- Shows execution time for commands taking > 1 second
-- Uses `~` for home directory in prompt
+- Format: `username@hostname:directory_name$`
+- In case a foreground process takes longer than 1 second, the execution time is added to the prompt
+- `~` represents the directory from which shell is called (home directory)
+- In case of directories which are not subdirectories of home, their absolute address from `/` is printed
 - Color-coded output
 
 ## Architecture
@@ -331,6 +335,15 @@ $ ls -la
 
 $ echo "Hello, World!"
 Hello, World!
+
+$ clear
+# Clears the terminal screen
+
+$ exit
+# Exits the shell (exit code 0)
+
+$ exit 1
+# Exits the shell with error code 1
 ```
 
 ### Piping and Redirection
@@ -394,47 +407,6 @@ pwd
 echo "test"
 # ... (last 10 commands)
 ```
-
-## Improvements Made
-
-### Code Quality
-1. **Constants**: Replaced all magic numbers with named constants
-2. **Memory Management**: Fixed memory leaks in background/foreground execution
-3. **Error Handling**: Standardized error messages using `perror()`
-4. **Input Validation**: Added command length validation
-
-### Bug Fixes
-1. **Uninitialized Pointer**: Fixed `int *status` to `int status` in foreground.c
-2. **Memory Leaks**: Added proper `free()` calls for allocated memory
-3. **Typo**: Fixed "Inavlid sig" to "Invalid sig"
-
-### Security
-1. **Input Validation**: Command length checking to prevent buffer overflows
-2. **Error Handling**: Proper error checking for system calls
-
-### New Features
-1. **exit Command**: Graceful shell exit with optional exit code
-2. **clear Command**: Terminal screen clearing
-
-## Limitations
-
-1. Maximum command length: 100 characters
-2. Maximum background jobs: 100
-3. Maximum piped commands: 1000
-4. History size: 20 commands
-5. Fixed-size arrays (no dynamic resizing)
-
-## Future Enhancements
-
-Potential improvements:
-- Environment variable support
-- Command aliasing
-- More advanced redirection (stderr, etc.)
-- Command substitution with backticks
-- More built-in commands
-- Configuration file support
-- Better error recovery
-- Dynamic array resizing
 
 ## Notes
 

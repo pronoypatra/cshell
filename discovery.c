@@ -6,6 +6,31 @@
 #include <unistd.h>
 #include <sys/stat.h>
 
+// Pattern matching function for wildcards like *.c
+int match_pattern(const char *pattern, const char *text)
+{
+    if (*pattern == '\0' && *text == '\0')
+        return 1;
+    
+    if (*pattern == '*')
+    {
+        // Try matching zero or more characters
+        if (match_pattern(pattern + 1, text))
+            return 1;
+        if (*text != '\0' && match_pattern(pattern, text + 1))
+            return 1;
+        return 0;
+    }
+    
+    if (*text == '\0')
+        return 0;
+    
+    if (*pattern == '?' || *pattern == *text)
+        return match_pattern(pattern + 1, text + 1);
+    
+    return 0;
+}
+
 int dfs(char *directory_info, char *print_directory, ll file_name_given, char *filename, ll file, ll directory)
 {
     if (file_name_given)
@@ -13,6 +38,7 @@ int dfs(char *directory_info, char *print_directory, ll file_name_given, char *f
         struct dirent **dirents;
         errno = 0;
         ll n = scandir(directory_info, &dirents, NULL, alphasort);
+        ll found_any = 0;
         if (!errno)
         {
             for (ll i = 0; i < n; i++)
@@ -35,14 +61,26 @@ int dfs(char *directory_info, char *print_directory, ll file_name_given, char *f
                     }
                     directory_info2[strlen(directory_info2)] = '\0';
                     print_directory2[strlen(print_directory2)] = '\0';
-                    if (!strcmp(filename, dirents[i]->d_name))
+                    // Check for exact match or pattern match
+                    if (!strcmp(filename, dirents[i]->d_name) || match_pattern(filename, dirents[i]->d_name))
                     {
-                        printf("%s/%s\n", print_directory, filename);
-                        return 1;
+                        printf("%s\n", print_directory2);
+                        found_any = 1;
+                        // For exact match, we can return early
+                        if (!strcmp(filename, dirents[i]->d_name))
+                        {
+                            return 1;
+                        }
+                        // For pattern match, continue searching for more matches
                     }
                     int x = dfs(directory_info2, print_directory2, file_name_given, filename, file, directory);
                     if (x == 1)
-                        return 1;
+                    {
+                        found_any = 1;
+                        // Only return early for exact matches
+                        if (!strcmp(filename, dirents[i]->d_name))
+                            return 1;
+                    }
                 }
             }
         }
@@ -51,7 +89,7 @@ int dfs(char *directory_info, char *print_directory, ll file_name_given, char *f
             printf("No file or directory\n");
         }
         errno = 0;
-        return 0;
+        return found_any;
     }
     else
     {
@@ -81,10 +119,17 @@ int dfs(char *directory_info, char *print_directory, ll file_name_given, char *f
                     }
                     directory_info2[strlen(directory_info2)] = '\0';
                     print_directory2[strlen(print_directory2)] = '\0';
-                    if (!strcmp(filename, dirents[i]->d_name))
+                    // Check for exact match or pattern match
+                    if (!strcmp(filename, dirents[i]->d_name) || match_pattern(filename, dirents[i]->d_name))
                     {
-                        printf("%s/%s\n", print_directory, filename);
-                        return 1;
+                        printf("%s\n", print_directory2);
+                        // Continue searching for more matches (don't return early for patterns)
+                        if (strcmp(filename, dirents[i]->d_name) == 0)
+                        {
+                            // Exact match found, can return
+                            return 1;
+                        }
+                        // Pattern match - continue searching for more matches
                     }
                     struct stat x;
                     stat(directory_info2, &x);
