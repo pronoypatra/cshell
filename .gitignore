@@ -1,0 +1,36 @@
+# Ignore build output and executables
+*.o
+*.out
+*.exe
+shell
+
+# Ignore backup and temporary files
+*~
+*.swp
+*.swo
+*.bak
+
+# Ignore dependency files
+*.d
+
+# Ignore compiled libraries
+*.a
+*.so
+
+# Ignore core dumps
+core
+core.*
+
+# Ignore history and user data files
+history.txt
+
+# Ignore byproducts from editors
+.DS_Store
+.vscode/
+.idea/
+*.log
+
+# Ignore all Makefile intermediate targets
+*.dSYM/
+# End Generation Here
+```
