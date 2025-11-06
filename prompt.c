@@ -60,15 +60,15 @@ void prompt(char home_directory[], char return_directory[], long int time)
         else
             strcpy(print_directory, current_directory);
         if (time == -1)
-            printf("\033[1;32m%s@%s\e[m:\033[1;34m%s\e[m> ", username, hostname, print_directory);
+            printf("\033[1;32m%s@%s\e[m:\033[1;34m%s\e[m$ ", username, hostname, print_directory);
         else
-            printf("\033[1;32m%s@%s\e[m:\033[1;34m%s \e[m \033[1;mtook %lds\033[0;m> ", username, hostname, print_directory, time);
+            printf("\033[1;32m%s@%s\e[m:\033[1;34m%s \e[m \033[1;mtook %lds\033[0;m$ ", username, hostname, print_directory, time);
     }
     else
     {
         if (time == -1)
-            printf("\033[1;32m%s@%s\e[m:\033[1;34m%s\e[m> ", username, hostname, current_directory);
+            printf("\033[1;32m%s@%s\e[m:\033[1;34m%s\e[m$ ", username, hostname, current_directory);
         else
-            printf("\033[1;32m%s@%s\e[m:\033[1;34m%s \e[m \033[1;mtook %lds\033[0;m> ", username, hostname, current_directory, time);
+            printf("\033[1;32m%s@%s\e[m:\033[1;34m%s \e[m \033[1;mtook %lds\033[0;m$ ", username, hostname, current_directory, time);
     }
 }
